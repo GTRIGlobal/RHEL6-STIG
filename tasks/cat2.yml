@@ -3203,6 +3203,7 @@
       - firewall
       - network
       - patch
+  when: not rhel6stig_skip_iptables
 
 - name: "MEDIUM | V-38688 | PATCH | A login banner must be displayed immediately prior to, or as part of, graphical desktop environment login prompts."
   command: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type bool --set /apps/gdm/simple-greeter/banner_message_enable true"
