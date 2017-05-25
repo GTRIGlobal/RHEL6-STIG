@@ -680,10 +680,10 @@
     regexp={{ item.rx }}
     line={{ item.ln }}
   with_items:
-    - { st: 'present', rx: "'^#?(Ciphers)?'", ln: "'Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc'" }
-    - { st: 'present', rx: "'^#?IgnoreRhosts'", ln: "'IgnoreRhosts yes'" }
-    - { st: 'present', rx: "'^#?HostbasedAuthentication'", ln: "'HostbasedAuthentication no'" }
-    - { st: 'present', rx: "'^#?PermitRootLogin'", ln: "'PermitRootLogin no'" }
+    - { st: 'present', rx: "^#?(Ciphers)?", ln: "Ciphers aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc" }
+    - { st: 'present', rx: "^#?IgnoreRhosts", ln: "IgnoreRhosts yes" }
+    - { st: 'present', rx: "^#?HostbasedAuthentication", ln: "HostbasedAuthentication no" }
+    - { st: 'present', rx: "^#?PermitRootLogin", ln: "PermitRootLogin no" }
   tags: [ 'cat2' , 'V-38617' , 'V-38611' , 'V-38612' , 'V-38613', 'ssh' ]
   notify: restart ssh
 
@@ -694,8 +694,8 @@
     regexp={{ item.rx }}
     line={{ item.ln }}
   with_items:
-    - { st: 'present', rx: "'^#?Banner'", ln: "'Banner /etc/issue'" }
-    - { st: 'present', rx: "'^(#)?PrintLastLog'", ln: "'PrintLastLog yes'" }
+    - { st: 'present', rx: "^#?Banner", ln: "Banner /etc/issue" }
+    - { st: 'present', rx: "^(#)?PrintLastLog", ln: "PrintLastLog yes" }
   tags: [ 'cat2' , 'V-38615' , 'V-38484' , 'ssh' , 'logon_settings' , 'dod_logon_banner' ]
   notify: restart ssh
 
@@ -723,16 +723,19 @@
         \tV-38560 Medium  The operating system must connect to external networks or information systems only through managed IPv4 interfaces consisting of boundary protection devices arranged in accordance with an organizational security architecture\n
         \tV-38512  Medium  The operating system must prevent public IPv4 access into an organizations internal networks except as appropriately mediated by managed interfaces employing boundary protection devices"
   service: name=iptables enabled=yes state=started
+  when: not rhel6stig_skip_iptables
   tags: [ 'cat2' , 'V-38555' , 'V-38560' , 'V-38512' , 'ipv4' , 'network' , 'firewall' ]
 
 - name: V-38513 Medium  The systems local IPv4 firewall must implement a deny-all allow-by-exception policy for inbound packets
   lineinfile: "state=present dest=/etc/sysconfig/iptables regexp=':INPUT' line=':INPUT DROP [0:0]'"
   tags: [ 'cat2' , 'V-38513' , 'ipv4' , 'firewall' , 'network']
+  when: not rhel6stig_skip_iptables  
   notify: restart iptables
 
 - name: V-38686 Medium  The system's local firewall must implement a deny-all, allow-by-exception policy for forwarded packets
   lineinfile: "state=present dest=/etc/sysconfig/iptables regexp=':FORWARD' line=':FORWARD DROP [0:0]'"
   tags: [ 'cat2' , 'V-38686' , 'firewall' , 'network']
+  when: not rhel6stig_skip_iptables  
   notify: restart iptables
 
 
